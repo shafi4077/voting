@@ -9,7 +9,8 @@ from django.contrib import messages
 def home(request,pk=None):
     if pk:
         # delete item
-        Item.objects.filter(id=pk).delete()
+        if request.user.username == 'arun':
+            Item.objects.filter(id=pk).delete()
         return HttpResponseRedirect(reverse('home'))
     if request.method == "POST":
         # add new item
