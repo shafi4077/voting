@@ -24,13 +24,13 @@ def home(request,pk=None):
 
     # show items
     annotated_items = []
-    for item in Item.objects.all():        
+    for item in Item.objects.filter(played=False):        
         c,me = 0,False
         for vote in item.votes.all():            
             c += vote.int_flag
             if vote.user == request.user: me=vote.flag
         annotated_items.append({'id':item.id,'title':item.title,'vcount':c,'voted':me})
-    return render(request,'home.html',{'items' :annotated_items})
+    return render(request,'home.html',{'items' :annotated_items,'played':Item.objects.filter(played=True)})
 
 @login_required
 def vote_item(request):
@@ -43,7 +43,11 @@ def vote_item(request):
     else:v.delete()
     return HttpResponseRedirect(reverse('home')) #return HttpResponse("f")
 
-def delete_votes(request):
-    # try annotate to find count
-    c = []#[ {id:..,count:..}...]
-    return HttpResponse(c)
+
+def played_item(request,pk):
+    #print pk
+    if request.user.username == 'arun':
+        item = Item.objects.get(pk=pk)   
+        item.played = True
+        item.save()
+    return HttpResponseRedirect(reverse('home'))

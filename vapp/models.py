@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 # Create your models here.
 class Item(models.Model):   
     title = models.CharField(max_length=100)
+    played = models.BooleanField(default=False)
     def __str__(self):
         return self.title
 
@@ -11,6 +12,7 @@ class Vote(models.Model):
     user = models.ForeignKey(User)
     CHOICES = (('u', 'up'),('d', 'down'),)
     flag = models.CharField(max_length=1, choices=CHOICES)
+    
 
     @property
     def int_flag(self):        

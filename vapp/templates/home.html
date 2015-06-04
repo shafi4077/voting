@@ -18,13 +18,14 @@
   </div><!-- /.col-lg-6 -->
 </div><!-- /.row -->
 <hr> 
+<h3> Current Queue </h3>
 <table class="table table-bordered">
-  <thead><tr><th>#</th><th>Description</th><th>Total Votes</th><th></th><th></th></tr></thead>
+  <thead><tr><th>#</th><th>Description</th><th>Total Votes</th>{%if user.username = 'arun'%}<td> <th></th><th></th>   {% endif %}<th>Vote</th></tr></thead>
   {% for item in items %}
   <tr>
     <th scope="row">{{forloop.counter}}</th><td>{{item.title}}</td>
     <td><span class="v{{ item.id}} label label-default">{{ item.vcount}}</span></td>
-    <td>      
+      <td>
       <a class='btn btn-xs {%if item.voted == 'u' %}btn-warning{%else%}btn-default{%endif%}' href="{% url 'vote_item' %}?item={{ item.id }}&t=u"> 
         <span class="glyphicon glyphicon-chevron-up"></span>
       </a>
@@ -32,8 +33,23 @@
         <span class="glyphicon glyphicon-chevron-down"></span>
       </a> 
     </td>
+    {%if user.username = 'arun'%}<td> 
+    <td><a class='btn btn-default' href="{% url 'played_item' item.id %}">Played</a></td>
     <td><a class='btn btn-xs btn-danger' href="{% url 'delete_item' item.id %}"><span class="glyphicon glyphicon-trash"></span></a></td>
+    {% endif %}
   </tr>
   {% endfor %}        
 </table>
+
+<h3> Played Songs </h3>
+<table class="table table-bordered">
+  <thead><tr><th>#</th><th>Description</th></tr></thead>
+  {% for item in played %}
+  <tr>
+    <th scope="row">{{forloop.counter}}</th><td>{{item.title}}</td>
+  </tr>
+  {% endfor %}        
+</table>
+
+
 {% endblock %}
