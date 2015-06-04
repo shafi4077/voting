@@ -5,6 +5,7 @@
         <meta charset="utf-8"> 
         <meta http-equiv="refresh" content="120">
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+
         {% block extra_head %}
         {% endblock %}
         <style type="text/css">
@@ -25,6 +26,44 @@
               line-height: 40px;
             }
         </style>
+        <script type="text/javascript">
+        function startTimer(duration, display) {
+            var start = Date.now(),
+                diff,
+                minutes,
+                seconds;
+            function timer() {
+                // get the number of seconds that have elapsed since 
+                // startTimer() was called
+                diff = duration - (((Date.now() - start) / 1000) | 0);
+
+                // does the same job as parseInt truncates the float
+                minutes = (diff / 60) | 0;
+                seconds = (diff % 60) | 0;
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                display.textContent = minutes + ":" + seconds; 
+
+                if (diff <= 0) {
+                    // add one second so that the count down starts at the full duration
+                    // example 05:00 not 04:59
+                    start = Date.now() + 1000;
+                }
+            };
+            // we don't want to wait a full second before the timer starts
+            timer();
+            setInterval(timer, 1000);
+        }
+
+        window.onload = function () {
+            var fiveMinutes = 60 * 2,
+                display = document.querySelector('#time');
+            startTimer(fiveMinutes, display);
+        };
+
+        </script>
     </head>
     <body>
      <div class="container">
@@ -32,8 +71,12 @@
       <div class="header clearfix">
         <nav>
           <ul class="nav nav-pills pull-right">
-            <li><a href="{% url 'password_change' %}?next=/">change password</a></li>    
-            <li><a href="{% url 'logout' %}?next=/">logout ({{user.username}})</a></li>          
+
+         
+
+
+            <li><a class="btn btn-danger" href="{% url 'password_change' %}?next=/">change password</a></li>    
+            <li><a class="btn btn-primary" href="{% url 'logout' %}?next=/">logout ({{user.username}})</a></li>          
           </ul>
         </nav>
         <h3 class="text-muted">Quadloops Music Queue</h3> 
