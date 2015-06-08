@@ -19,3 +19,7 @@ class Vote(models.Model):
         if self.flag == 'u':return 1
         return -1 
     
+class leaderboard(models.Model):
+    user = models.ForeignKey(User)
+    no_of_songs = models.IntegerField()
+    songs_played = models.IntegerField()

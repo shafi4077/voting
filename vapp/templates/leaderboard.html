@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block body %} 
+
+
+<table class="table table-bordered">
+  <thead><tr><th>Position</th><th>User</th><th>No.of Songs Requested</th><th>No. of Songs Played by DJ</th></tr></thead>
+  {% for item in played %}
+  <tr>
+    <th scope="row">{{forloop.counter}}</th><td>{{item.title}}</td>
+  </tr>
+  {% endfor %}        
+</table>
+
+{% endblock %}

@@ -51,3 +51,7 @@ def played_item(request,pk):
         item.played = True
         item.save()
     return HttpResponseRedirect(reverse('home'))
+
+
+def leaderboard(request):
+    return HttpResponse("Leaderboard is Cooking")
