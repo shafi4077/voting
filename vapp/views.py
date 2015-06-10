@@ -3,8 +3,16 @@ from django.http import HttpResponse,HttpResponseRedirect
 from vapp.models import Item,Vote
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
+from django.contrib.auth.models import User
 from django.contrib import messages
-
+import json
+class JSONEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, ObjectId):
+            return str(o)
+        elif isinstance(o, datetime.datetime):
+            return o.isoformat()
+        return json.JSONEncoder.default(self, o)
 @login_required
 def home(request,pk=None):
     if pk:
@@ -32,16 +40,6 @@ def home(request,pk=None):
         annotated_items.append({'id':item.id,'title':item.title,'vcount':c,'voted':me})
     return render(request,'home.html',{'items' :annotated_items,'played':Item.objects.filter(played=True)})
 
-@login_required
-def vote_item(request):
-    t,item = request.GET['t'],request.GET['item']
-    v,created= Vote.objects.get_or_create(item_id=item, user=request.user)
-    if created or (v.flag != t): 
-        v.flag=t 
-        v.save()
-        #return HttpResponse("t")
-    else:v.delete()
-    return HttpResponseRedirect(reverse('home')) #return HttpResponse("f")
 
 
 def played_item(request,pk):
@@ -55,3 +53,32 @@ def played_item(request,pk):
 
 def leaderboard(request):
     return HttpResponse("Leaderboard is Cooking")
+
+def get_list(request):
+
+    items = []
+    for i in Item.objects.filter(played=False):
+        c,me = 0,False
+        for vote in i.votes.all():
+            c += vote.int_flag
+            if vote.user == request.user: me=vote.flag
+        items.append({"id":i.id,"item":i.title,"cvote":c,'voted':me})
+    print items,'items'
+    return HttpResponse(JSONEncoder().encode(items))
+def create_item(request):
+    title=request.GET.get('item_title')
+    Item(title=title).save()
+    user_id=[user.id for user in User.objects.all()]
+    return HttpResponse(json.dumps(user_id),content_type='application/json')
+
+@login_required
+def vote(request):
+    t,item = request.GET['state'],request.GET['id']
+    v,created= Vote.objects.get_or_create(item_id=item, user=request.user)
+    if created or (v.flag != t): 
+        v.flag=t 
+        v.save()
+        #return HttpResponse("t")
+    else:v.delete()
+    user_id=[user.id for user in User.objects.all()]
+    return HttpResponse(json.dumps(user_id),content_type='application/json')

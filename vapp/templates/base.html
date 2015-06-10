@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html>
     <head>
-    <title>QMQ - Quadloops Music Queue</title>
+    <title>123{{STATIC_URL}}QMQ - Quadloops Music Queue</title>
         <meta charset="utf-8"> 
         <meta http-equiv="refresh" content="120">
-        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
-
+        <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet" />
         {% block extra_head %}
         {% endblock %}
         <style type="text/css">
@@ -26,44 +25,7 @@
               line-height: 40px;
             }
         </style>
-        <script type="text/javascript">
-        function startTimer(duration, display) {
-            var start = Date.now(),
-                diff,
-                minutes,
-                seconds;
-            function timer() {
-                // get the number of seconds that have elapsed since 
-                // startTimer() was called
-                diff = duration - (((Date.now() - start) / 1000) | 0);
-
-                // does the same job as parseInt truncates the float
-                minutes = (diff / 60) | 0;
-                seconds = (diff % 60) | 0;
-
-                minutes = minutes < 10 ? "0" + minutes : minutes;
-                seconds = seconds < 10 ? "0" + seconds : seconds;
-
-                display.textContent = minutes + ":" + seconds; 
-
-                if (diff <= 0) {
-                    // add one second so that the count down starts at the full duration
-                    // example 05:00 not 04:59
-                    start = Date.now() + 1000;
-                }
-            };
-            // we don't want to wait a full second before the timer starts
-            timer();
-            setInterval(timer, 1000);
-        }
-
-        window.onload = function () {
-            var fiveMinutes = 60 * 2,
-                display = document.querySelector('#time');
-            startTimer(fiveMinutes, display);
-        };
-
-        </script>
+       
     </head>
     <body>
      <div class="container">
@@ -91,6 +53,15 @@
      <!-- Core Scripts - Include with every page 
      <script src="dist/jquery.js"></script>-->
      {% block javascript %}
+       
+        <script src="http://127.0.0.1:4000/static/js/angular.js"></script>
+        <script src="http://127.0.0.1:4000/static/js/jquery-2.0.3.min.js"></script>
+        <!-- // <script src="http://127.0.0.1:8000/static/js/angular-animate.js"></script> -->
+         <script src="http://127.0.0.1:4000/static/js/controllers.js"></script>
+        
+         <script>
+          var chat_uri ="ws://localhost:8888/ws/{{user.id}}";
+          </script>
      {% endblock %}    
     </body>
 </html>
