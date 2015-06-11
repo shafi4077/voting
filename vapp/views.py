@@ -42,14 +42,14 @@ def home(request,pk=None):
 
 
 
-def played_item(request,pk):
-    #print pk
-    if request.user.username == 'arun':
-        item = Item.objects.get(pk=pk)   
-        item.played = True
-        item.save()
+def played_item(request):
+    pk=request.GET['id']
+    item = Item.objects.get(pk=pk)   
+    item.played = True
+    item.save()
     return HttpResponseRedirect(reverse('home'))
-
+    user_id=[user.id for user in User.objects.all()]
+    return HttpResponse(json.dumps(user_id),content_type='application/json')
 
 def leaderboard(request):
     return HttpResponse("Leaderboard is Cooking")
@@ -57,12 +57,12 @@ def leaderboard(request):
 def get_list(request):
 
     items = []
-    for i in Item.objects.filter(played=False):
+    for i in Item.objects.filter():
         c,me = 0,False
         for vote in i.votes.all():
             c += vote.int_flag
             if vote.user == request.user: me=vote.flag
-        items.append({"id":i.id,"item":i.title,"cvote":c,'voted':me})
+        items.append({"id":i.id,"item":i.title,"cvote":c,'voted':me,"played":i.played,"username":request.user.username})
     print items,'items'
     return HttpResponse(JSONEncoder().encode(items))
 def create_item(request):
@@ -80,5 +80,11 @@ def vote(request):
         v.save()
         #return HttpResponse("t")
     else:v.delete()
+    user_id=[user.id for user in User.objects.all()]
+    return HttpResponse(json.dumps(user_id),content_type='application/json')
+
+def delete(request):
+    item_id=request.GET.get('item_id')
+    Item.objects.get(id=item_id).delete()
     user_id=[user.id for user in User.objects.all()]
     return HttpResponse(json.dumps(user_id),content_type='application/json')

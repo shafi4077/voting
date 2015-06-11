@@ -9,14 +9,6 @@
         <div class="alert alert-{{ message.tags }}"><strong>{{ message.tags }}! </strong>: {{ message }}</div>
       {% endfor %}
     {% endif %}
-    <div class="input-group">      
-      <input type="text" class="form-control" placeholder="item text... " name="item">
-
-      <span class="input-group-btn">
-        <button class="btn btn-default" type="submit">Add Item!</button>
-
-      </span>      
-    </div><!-- /input-group -->
     </form>
 
 
@@ -31,33 +23,13 @@
 
       </span>      
     </div><!-- /input-group -->
+
 <h3> Current Queue </h3>
-<table class="table table-bordered">
-  <thead><tr><th>#</th><th>Description</th><th>Total Votes</th>{%if user.username = 'arun'%}<td> <th></th><th></th>   {% endif %}<th>Vote</th></tr></thead>
-  {% for item in items %}
-  <tr>
-    <th scope="row">{{forloop.counter}}</th><td>{{item.title}}</td>
-    <td><span class="v{{ item.id}} label label-default">{{ item.vcount}}</span></td>
-      <td>
-      <a class='btn btn-xs {%if item.voted == 'u' %}btn-warning{%else%}btn-default{%endif%}' > 
-        <span class="glyphicon glyphicon-chevron-up"></span>
-      </a>
-      <a class='btn btn-xs {%if item.voted == 'd' %}btn-warning{%else%}btn-default{%endif%}'> 
-        <span class="glyphicon glyphicon-chevron-down"></span>
-      </a> 
-    </td>
-    {%if user.username = 'arun'%}<td> 
-    <td><a class='btn btn-default'>Played</a></td>
-    <td><a class='btn btn-xs btn-danger'><span class="glyphicon glyphicon-trash"></span></a></td>
-    {% endif %}
-  </tr>
-  {% endfor %}        
-</table>
-<h3> Current Queue </h3>
-<table class="table table-bordered">
-  <thead><tr><th>#</th><th>Description</th><th>Total Votes</th>{%if user.username = 'arun'%}<td> <th></th><th></th>   {% endif %}<th>Vote</th></tr></thead>
-  <tr ng-repeat="item in items">
-    <th scope="row">{% verbatim %}{{ $index+1 }}{% endverbatim %}</th><td>{% verbatim %}{{ item.item }}{% endverbatim %}</td>
+<table class="table table-bordered" ng-init="indx=1">
+  <thead><tr><th>#</th><th>Description</th><th>Total Votes</th><th>Vote</th></tr></thead>
+  <tr ng-repeat="item in items" ng-if="!item.played" >
+    <th scope="row">{% verbatim %}{{ indx + 1 }}{% endverbatim %}
+      </th><td>{% verbatim %}{{ item.item }}{% endverbatim %}</td>
     <td><span class="v{{ item.id}} label label-default">{% verbatim %}{{ item.cvote }}{% endverbatim %}</span></td>
       <td>
       <a class="btn btn-xs" ng-class="item.voted=='u' ? 'btn-warning' : 'btn-default'" ng-click="vote('u',item.id)"> 
@@ -67,7 +39,8 @@
         <span class="glyphicon glyphicon-chevron-down"></span>
       </a> 
     </td>
-
+    <td ng-if="item.username="arun"" ><a class='btn btn-default' ng-click="play(item.id)">Play</a></td>
+    <td ng-if="item.username="arun"" ><a class='btn btn-xs btn-danger' ng-click="delete(item.id )"><span class="glyphicon glyphicon-trash"></span></a></td>
   </tr>
       
 </table>
@@ -75,11 +48,10 @@
 <h3> Played Songs </h3>
 <table class="table table-bordered">
   <thead><tr><th>#</th><th>Description</th></tr></thead>
-  {% for item in played %}
-  <tr>
-    <th scope="row">{{forloop.counter}}</th><td>{{item.title}}</td>
-  </tr>
-  {% endfor %}        
+  <tr ng-repeat="item in items" ng-if="item.played">
+    <th scope="row">{% verbatim %}{{ $index+1 }}{% endverbatim %}</th>
+    <td>{% verbatim %}{{ item.item }}{% endverbatim %}</td>
+  </tr>      
 </table>
 
 </div>
